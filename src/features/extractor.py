@@ -1,52 +1,80 @@
 import tensorflow as tf
 import numpy as np
-from typing import List, Tuple
+from pyspark.sql.functions import udf
+from pyspark.sql.types import *
+import cv2
 import logging
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class FeatureExtractor:
-    def __init__(self):
-        self.base_model = tf.keras.applications.ResNet50(
+    def __init__(self, input_shape=(224, 224, 1)):
+        self.input_shape = input_shape
+        self.base_model = self._create_base_model()
+
+    def _create_base_model(self):
+        """
+        Crea el modelo base para extracción de características
+        """
+        base_model = tf.keras.applications.ResNet50V2(
             include_top=False,
             weights='imagenet',
-            input_shape=(224, 224, 3)
+            input_shape=(224, 224, 3),
+            pooling='avg'
         )
-        self.base_model.trainable = False
+        base_model.trainable = False
+        return base_model
 
-    def extract_features(self, image: np.ndarray) -> np.ndarray:
+    def extract_features(self, img_array):
         """
-        Extrae características usando ResNet50
+        Extrae características de una imagen
         """
         try:
             # Convertir imagen en escala de grises a RGB
-            if len(image.shape) == 2 or image.shape[2] == 1:
-                image = np.stack((image,) * 3, axis=-1)
+            if len(img_array.shape) == 2 or img_array.shape[-1] == 1:
+                img_rgb = np.stack([img_array] * 3, axis=-1)
+            else:
+                img_rgb = img_array
 
-            # Asegurar que la imagen esté en el rango [0, 1]
-            if image.max() > 1.0:
-                image = image / 255.0
-
-            # Expandir dimensiones para el batch
-            image = np.expand_dims(image, axis=0)
-
-            # Extraer características
-            features = self.base_model.predict(image)
+            # Preprocesamiento para ResNet
+            img_resized = cv2.resize(img_rgb, (224, 224))
+            img_normalized = tf.keras.applications.resnet_v2.preprocess_input(img_resized)
             
+            # Extraer características
+            features = self.base_model.predict(np.expand_dims(img_normalized, axis=0))
             return features.flatten()
 
         except Exception as e:
-            logger.error(f"Error extrayendo características: {str(e)}")
+            logger.error(f"Error en extracción de características: {str(e)}")
             return None
 
-    def batch_extract_features(self, images: List[np.ndarray]) -> np.ndarray:
+    def create_spark_udf(self):
+        """
+        Crea UDF de Spark para extracción de características
+        """
+        def extract_features_udf(img_path):
+            try:
+                img = cv2.imread(img_path)
+                features = self.extract_features(img)
+                return features.tolist() if features is not None else None
+            except Exception as e:
+                logger.error(f"Error en UDF: {str(e)}")
+                return None
+
+        return udf(extract_features_udf, ArrayType(FloatType()))
+
+    def extract_batch_features(self, image_paths):
         """
         Extrae características de un lote de imágenes
         """
-        features = []
-        for img in images:
-            feat = self.extract_features(img)
-            if feat is not None:
-                features.append(feat)
-        return np.array(features)
+        features_list = []
+        for path in image_paths:
+            try:
+                img = cv2.imread(path)
+                features = self.extract_features(img)
+                if features is not None:
+                    features_list.append(features)
+            except Exception as e:
+                logger.error(f"Error procesando {path}: {str(e)}")
+
+        return np.array(features_list)
