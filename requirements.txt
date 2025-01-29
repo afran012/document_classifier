@@ -1,0 +1,10 @@
+tensorflow
+pyspark
+opencv-python
+numpy
+jupyter
+pdf2image
+pillow
+pandas
+scikit-learn
+matplotlib
