@@ -8,15 +8,4 @@ pillow
 pandas
 scikit-learn
 matplotlib
-
-pyspark
-tensorflow
-jupyter
-pandas
-numpy
-pdf2image
-pillow
-opencv-python
-scikit-learn
-matplotlib
 seaborn
