@@ -8,4 +8,5 @@ pillow
 pandas
 scikit-learn
 matplotlib
-seaborn
+seaborn 
+notebook
