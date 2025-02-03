@@ -6,6 +6,7 @@ __pycache__/
 .Python
 venv/
 env/
+.venv
 
 # Notebooks
 .ipynb_checkpoints
@@ -28,3 +29,9 @@ data/models/*
 
 data\raw
 2-TITULOS-15-DE-NOVIEMBRE-2024-1-30.pdf
+2-TITULOS-15-DE-NOVIEMBRE-2024.pdf
+notebooks/data/models/checkpoints/model_01.h5/
+notebooks\data\models\checkpoints\model_01.h5\
+notebooks\data\models\checkpoints\model_01.h5
+C:\Users\Steev\Documents\AiranFranco\tributai  IA\document_classifier\notebooks\data\models\checkpoints\model_01.h5
+model_01.h5
