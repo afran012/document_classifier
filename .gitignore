@@ -44,3 +44,9 @@ notebooks\logs\20250129-193802\validation\events.out.tfevents.1738197488.DESKTOP
 notebooks/logs/20250129-193802/train/events.out.tfevents.1738197483.DESKTOP-KEE4MMN.18688.0.v2
 notebooks/logs/20250129-193802/validation/events.out.tfevents.1738197488.DESKTOP-KEE4MMN.18688.1.v2
 data/labels.json
+notebooks/data/processed/processed_pages.parquet/_SUCCESS
+notebooks/data/processed/processed_pages.parquet/
+notebooks/nuevos/data/models/logistic_regression_model/data/
+notebooks/nuevos/data/models/logistic_regression_model/metadata/
+notebooks/nuevos/data/processed/
+notebooks/nuevos/data/labels.json
