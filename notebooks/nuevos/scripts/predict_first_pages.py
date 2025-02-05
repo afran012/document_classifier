@@ -11,33 +11,31 @@ from pyspark.ml.classification import LogisticRegressionModel
 from pyspark.ml.feature import StandardScalerModel
 
 def check_hadoop_libraries():
-    # Verificar las variables de entorno
     hadoop_home = os.environ.get('HADOOP_HOME')
-    java_home = os.environ.get('JAVA_HOME')
-    
     if not hadoop_home:
         print("Error: HADOOP_HOME no está configurado.")
         return False
-    
-    if not java_home:
-        print("Error: JAVA_HOME no está configurado.")
-        return False
-    
+
     # Verificar la existencia de winutils.exe
     winutils_path = os.path.join(hadoop_home, 'bin', 'winutils.exe')
     if not os.path.exists(winutils_path):
         print(f"Error: {winutils_path} no existe.")
         return False
-    
-    # Verificar la existencia de las bibliotecas nativas de Hadoop
-    native_lib_path = os.path.join(hadoop_home, 'bin')
+
+    # Verificar la existencia de hadoop.dll
+    hadoop_dll_path = os.path.join(hadoop_home, 'bin', 'hadoop.dll')
+    if not os.path.exists(hadoop_dll_path):
+        print(f"Error: {hadoop_dll_path} no existe.")
+        return False
+
+    # Intentar cargar hadoop.dll
     try:
-        ctypes.cdll.LoadLibrary(os.path.join(native_lib_path, 'hadoop.dll'))
+        ctypes.cdll.LoadLibrary(hadoop_dll_path)
+        print("Biblioteca nativa de Hadoop cargada correctamente.")
     except OSError as e:
         print(f"Error: No se pudo cargar la biblioteca nativa de Hadoop: {e}")
         return False
-    
-    print("Todas las bibliotecas necesarias de Hadoop están presentes.")
+
     return True
 
 # Verificar las bibliotecas necesarias de Hadoop antes de ejecutar el script

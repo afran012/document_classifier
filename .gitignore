@@ -50,3 +50,4 @@ notebooks/nuevos/data/models/logistic_regression_model/data/
 notebooks/nuevos/data/models/logistic_regression_model/metadata/
 notebooks/nuevos/data/processed/
 notebooks/nuevos/data/labels.json
+notebooks/nuevos/data/pdf_pages/
