@@ -51,3 +51,8 @@ notebooks/nuevos/data/models/logistic_regression_model/metadata/
 notebooks/nuevos/data/processed/
 notebooks/nuevos/data/labels.json
 notebooks/nuevos/data/pdf_pages/
+notebooks/nuevos/data/output/
+notebooks/nuevos/predicted_first_pages.txt
+notebooks/nuevos/data/PDFTEST/
+notebooks/nuevos/data/output1/
+notebooks/nuevos/predicted_first_pages2.txt
